@@ -34,7 +34,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10">
                 <Button Content="Add playlist" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0" Click="AddPlaylistBtn" />
                 <Button Content="Add folder" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
-                <Button Content="Add song" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
+                <Button Content="Add song" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0" Click="AddSongBtn"/>
                 <Button Content="Add random" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
             </StackPanel>
 
