@@ -1,0 +1,102 @@
+﻿<Window x:Class="MusicAppComplete.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicAppComplete"
+        mc:Ignorable="d"
+        Title="Music Player" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
+        >
+    <Border Background="#1C2526" CornerRadius="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Gradient Background -->
+            <Border Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#2ECC71" Offset="0"/>
+                        <GradientStop Color="#1C2526" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10">
+                <Button Content="Add playlist" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0" Click="AddPlaylistBtn" />
+                <Button Content="Add folder" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
+                <Button Content="Add song" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
+                <Button Content="Add random" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
+            </StackPanel>
+
+            <!-- Home Label and Song List -->
+            <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Margin="10">
+                <TextBlock Text="Home" FontSize="20" Foreground="White" Margin="0,0,0,10"/>
+                <Border Background="#2F3A3B" CornerRadius="5">
+                    <StackPanel>
+                        <TextBlock Text="ALL song" FontSize="16" Foreground="White" Margin="5"/>
+                        <TextBlock Text="Total song: 0"  FontSize="12" Foreground="Gray" Margin="5,0,5,5"/>
+                        <ListBox Background="Transparent" BorderThickness="0" Height="500">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="60"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Number}" Foreground="White"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Artist}" Foreground="White"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding Duration}" Foreground="White"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Playlist Section -->
+            <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="10">
+                <TextBlock Text="ALL playlist" FontSize="20" Foreground="White" Margin="0,0,0,10"/>
+                <Border Background="#2F3A3B" CornerRadius="5">
+                    <ItemsControl ItemsSource="{Binding Playlists}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="16" Foreground="White"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding PlaylistSongs.Count}" FontSize="16" Foreground="White" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </StackPanel>
+
+            <!-- Playback Controls -->
+            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="⏮" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
+                <Button Content="▶" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
+                <Button Content="⏭" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
+                <Slider Width="200" Margin="5" Background="Transparent"/>
+                <TextBlock Text="0:00 / 0:00" Foreground="White" VerticalAlignment="Center" Margin="5"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+
+</Window>
