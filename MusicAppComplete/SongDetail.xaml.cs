@@ -11,26 +11,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using PRN212.Assignment.DAL.Entities;
 
 namespace MusicAppComplete
 {
     /// <summary>
-    /// Interaction logic for PlayListDetail.xaml
+    /// Interaction logic for SongDetail.xaml
     /// </summary>
-    public partial class PlayListDetail : Window
+    public partial class SongDetail : Window
     {
-        public PlayList EditOne { get; set; } = null;
-        public PlayListDetail()
+        public SongDetail()
         {
             InitializeComponent();
         }
-
-        private void AddSongButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-       
     }
 }

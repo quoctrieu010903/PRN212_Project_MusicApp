@@ -13,6 +13,7 @@ namespace MusicAppComplete
     {
         private PlayListService playListService { get; set; } = new();
         public ObservableCollection<PlayList> Playlists { get; set; } = new ObservableCollection<PlayList>();
+        public PlayList selectedPlayList { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -21,6 +22,15 @@ namespace MusicAppComplete
 
         private void AddPlaylistBtn(object sender, RoutedEventArgs e)
         {
+           
+
+
+            PlayListDetail playListDetail = new PlayListDetail();
+
+
+
+            playListDetail.ShowDialog();
+            
         }
 
         private void LoadPlaylist()
@@ -29,6 +39,14 @@ namespace MusicAppComplete
            
             Playlists = new ObservableCollection<PlayList>(playList);
             DataContext = this; // rất quan trọng để Binding hoạt động
+        }
+
+        private void AddSongBtn(object sender, RoutedEventArgs e)
+        {
+
+            SongDetail songDetail = new SongDetail();
+            songDetail.ShowDialog();
+
         }
     }
    
