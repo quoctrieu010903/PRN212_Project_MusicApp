@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicAppComplete"
         mc:Ignorable="d"
-        Title="Music Player" Height="600" Width="1000" WindowStartupLocation="CenterScreen"
+        Title="Music Player" 
+        Height="600" 
+        Width="1000" 
+        WindowStartupLocation="CenterScreen"
+        Background="#1C2526"
         >
     <Border Background="#1C2526" CornerRadius="10">
         <Grid>
@@ -30,35 +34,82 @@
                 </Border.Background>
             </Border>
 
-            <!-- Buttons -->
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10">
-                <Button Content="Add playlist" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0" Click="AddPlaylistBtn" />
-                <Button Content="Add folder" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
-                <Button Content="Add song" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0" Click="AddSongBtn"/>
-                <Button Content="Add random" Width="100" Margin="5" Background="#2ECC71" Foreground="White" BorderThickness="0"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Background="#263238">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Add Playlist" Style="{StaticResource CustomButtonStyle}" Click="AddPlaylistBtn"/>
+                    <Button Content="Add Folder" Style="{StaticResource CustomButtonStyle}" Click="AddFolderbtn"/>
+                    <Button Content="Add Song" Style="{StaticResource CustomButtonStyle}" Click="AddSongBtn"/>
+                    <Button Content="Add Artist" Style="{StaticResource CustomButtonStyle}"/>
+                </StackPanel>
+            </Grid>
 
             <!-- Home Label and Song List -->
             <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Margin="10">
-                <TextBlock Text="Home" FontSize="20" Foreground="White" Margin="0,0,0,10"/>
-                <Border Background="#2F3A3B" CornerRadius="5">
+                <TextBlock Text="Home" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Border Style="{StaticResource SectionBorderStyle}">
                     <StackPanel>
-                        <TextBlock Text="ALL song" FontSize="16" Foreground="White" Margin="5"/>
-                        <TextBlock Text="Total song: 0"  FontSize="12" Foreground="Gray" Margin="5,0,5,5"/>
-                        <ListBox Background="Transparent" BorderThickness="0" Height="500">
+                        <TextBlock Text="All Songs" Style="{StaticResource SubHeaderStyle}"/>
+                        <TextBlock x:Name="TotalSongsTextBlock" 
+                                   Text="Total Songs: 0" 
+                                   Style="{StaticResource SecondaryTextStyle}" 
+                                   Margin="0,0,0,10"/>
+
+                        <ListBox x:Name="SongListBox" 
+                                 Background="Transparent" 
+                                 BorderThickness="0" 
+                                 Height="500" 
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource SongListItemStyle}"/>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid>
+                                    <Grid Margin="0,2">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="30"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="60"/>
-                                            <ColumnDefinition Width="60"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <!-- Index -->
+                                            <ColumnDefinition Width="2*"/>
+                                            <!-- Title -->
+                                            <ColumnDefinition Width="2*"/>
+                                            <!-- Artist -->
+                                            <ColumnDefinition Width="1*"/>
+                                            <!-- Duration -->
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding Number}" Foreground="White"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Title}" Foreground="White"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding Artist}" Foreground="White"/>
-                                        <TextBlock Grid.Column="3" Text="{Binding Duration}" Foreground="White"/>
+
+                                        <!-- ContextMenu for Song List (Appears on Right-Click) -->
+                                        <Grid.ContextMenu>
+                                            <ContextMenu Style="{StaticResource ContextMenuStyle}">
+                                                <MenuItem Header="Edit Song" 
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                          />
+                                                <MenuItem Header="Delete Song" 
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                           Click="DeleteSong_Click"/>
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+
+                                        <!-- Index -->
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Index}" 
+                                                   Style="{StaticResource SecondaryTextStyle}" 
+                                                   Margin="0,0,15,0"/>
+
+                                        <!-- Song Title -->
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{Binding Title}" 
+                                                   Style="{StaticResource PrimaryTextStyle}"/>
+
+                                        <!-- Artist Name -->
+                                        <TextBlock Grid.Column="2" 
+                                                   Text="{Binding Artist.Name}" 
+                                                   Style="{StaticResource SecondaryTextStyle}"/>
+
+                                        <!-- Duration -->
+                                        <TextBlock Grid.Column="3" 
+                                                   Text="{Binding Duration}" 
+                                                   Style="{StaticResource SecondaryTextStyle}" 
+                                                   HorizontalAlignment="Right"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -69,19 +120,48 @@
 
             <!-- Playlist Section -->
             <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="10">
-                <TextBlock Text="ALL playlist" FontSize="20" Foreground="White" Margin="0,0,0,10"/>
-                <Border Background="#2F3A3B" CornerRadius="5">
-                    <ItemsControl ItemsSource="{Binding Playlists}">
+                <TextBlock Text="All Playlists" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <Border Style="{StaticResource SectionBorderStyle}">
+                    <ItemsControl ItemsSource="{Binding Playlists}" MaxHeight="500" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ItemsControl.Template>
+                            <ControlTemplate TargetType="ItemsControl">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ItemsControl.Template>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="30"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="16" Foreground="White"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding PlaylistSongs.Count}" FontSize="16" Foreground="White" HorizontalAlignment="Right"/>
-                                </Grid>
+                                <Border Style="{StaticResource PlaylistItemStyle}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- ContextMenu for Playlist (Appears on Right-Click) -->
+                                        <Grid.ContextMenu>
+                                            <ContextMenu Style="{StaticResource ContextMenuStyle}">
+                                                <MenuItem Header="Edit Playlist" 
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                          />
+                                                <MenuItem Header="Delete Playlist" 
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                         />
+                                            </ContextMenu>
+                                        </Grid.ContextMenu>
+
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding Name}" 
+                                                   Style="{StaticResource PrimaryTextStyle}"/>
+
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{Binding PlaylistSongs.Count}" 
+                                                   Style="{StaticResource SecondaryTextStyle}" 
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -89,12 +169,19 @@
             </StackPanel>
 
             <!-- Playback Controls -->
-            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="⏮" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
-                <Button Content="▶" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
-                <Button Content="⏭" Width="40" Margin="5" Background="Transparent" Foreground="White"/>
-                <Slider Width="200" Margin="5" Background="Transparent"/>
-                <TextBlock Text="0:00 / 0:00" Foreground="White" VerticalAlignment="Center" Margin="5"/>
+            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Background="#263238">
+                <Button Content="⏮" Style="{StaticResource ControlButtonStyle}"/>
+                <Button Content="▶" Style="{StaticResource ControlButtonStyle}"/>
+                <Button Content="⏭" Style="{StaticResource ControlButtonStyle}"/>
+                <Slider x:Name="PlaybackSlider" 
+                        Width="200" 
+                        Margin="5" 
+                        Style="{StaticResource CustomSlider}"/>
+                <TextBlock x:Name="PlaybackTimeTextBlock" 
+                           Text="0:00 / 0:00" 
+                           Foreground="#FFFFFF" 
+                           VerticalAlignment="Center" 
+                           Margin="5"/>
             </StackPanel>
         </Grid>
     </Border>

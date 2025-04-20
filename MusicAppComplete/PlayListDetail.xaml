@@ -56,7 +56,7 @@
             </StackPanel>
 
             <Button Content="Save" Grid.Row="5" Width="100" Height="30" Background="#FF00FF00" 
-                    Foreground="White" BorderThickness="0" >
+                    Foreground="White" BorderThickness="0" Click="SaveBtn" >
                 <Button.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Template">

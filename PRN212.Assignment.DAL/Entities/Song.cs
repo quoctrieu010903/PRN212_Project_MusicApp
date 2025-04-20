@@ -12,7 +12,7 @@ public partial class Song
 
     public int? ArtistId { get; set; }
 
-    public TimeOnly? Duration { get; set; }
+    public TimeSpan Duration { get; set; }
 
     public string? Path { get; set; }
 

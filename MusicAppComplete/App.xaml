@@ -5,85 +5,230 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
-        <!-- Reuse styles from previous implementation -->
-        <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border Background="{TemplateBinding Background}" 
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#3E3E40"/>
-                </Trigger>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#3E3E40"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+      <!--#region  Style for mainWindow -->
+                <!-- Style for Section Headers (e.g., "Home", "All Playlists") -->
+                <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="20"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="Margin" Value="0,0,0,10"/>
+                </Style>
 
-        <Style x:Key="ControlButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#D4D4D4"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="Width" Value="40"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                Width="{TemplateBinding Width}"
-                                Height="{TemplateBinding Height}"
-                                CornerRadius="20">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#3E3E40"/>
-                    <Setter Property="Foreground" Value="#007ACC"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+                <!-- Style for Sub Headers (e.g., "All Songs") -->
+                <Style x:Key="SubHeaderStyle" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="16"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="Margin" Value="0,0,0,5"/>
+                </Style>
 
-        <Style x:Key="CustomSlider" TargetType="Slider">
-            <Setter Property="Background" Value="#3E3E40"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Height" Value="5"/>
-            <Setter Property="IsMoveToPointEnabled" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Slider">
-                        <Grid>
-                            <Track x:Name="PART_Track">
-                                <Track.Thumb>
-                                    <Thumb Width="10" Height="10">
-                                        <Thumb.Template>
-                                            <ControlTemplate>
-                                                <Ellipse Fill="#007ACC" Stroke="#3E3E40" StrokeThickness="1"/>
-                                            </ControlTemplate>
-                                        </Thumb.Template>
-                                    </Thumb>
-                                </Track.Thumb>
-                            </Track>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                <!-- Style for Secondary Text (e.g., "Total Songs: 0", Artist, Duration) -->
+                <Style x:Key="SecondaryTextStyle" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="Foreground" Value="#B0BEC5"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
 
+                <!-- Style for Primary Text (e.g., Song Title, Playlist Name) -->
+                <Style x:Key="PrimaryTextStyle" TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="FontWeight" Value="Medium"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                </Style>
 
+                <!-- Style for ListBoxItem (Song List) -->
+                <Style x:Key="SongListItemStyle" TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Padding" Value="8"/>
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="BorderBrush" Value="#4CAF50"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Background="{TemplateBinding Background}" 
+                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                        CornerRadius="5">
+                                    <ContentPresenter/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#3A4A66"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#4CAF50"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <!-- Style for Playlist Item Border -->
+                <Style x:Key="PlaylistItemStyle" TargetType="Border">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="CornerRadius" Value="5"/>
+                    <Setter Property="Margin" Value="0,2"/>
+                    <Setter Property="Padding" Value="8"/>
+                    <Setter Property="BorderBrush" Value="#4CAF50"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#3A4A66"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
+                <!-- Style for Borders (Song List and Playlist Containers) -->
+                <Style x:Key="SectionBorderStyle" TargetType="Border">
+                    <Setter Property="Background" Value="#2E3B55"/>
+                    <Setter Property="CornerRadius" Value="8"/>
+                    <Setter Property="Padding" Value="10"/>
+                </Style>
+
+                <!-- Style for Top Bar Buttons -->
+                <Style x:Key="CustomButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="#4CAF50"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                    <Setter Property="Padding" Value="10,5"/>
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                        CornerRadius="5">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#66BB6A"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#388E3C"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <!-- Style for Playback Control Buttons -->
+                <Style x:Key="ControlButtonStyle" TargetType="Button">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="#D4D4D4"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FontSize" Value="20"/>
+                    <Setter Property="Width" Value="40"/>
+                    <Setter Property="Height" Value="40"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                        Width="{TemplateBinding Width}"
+                                        Height="{TemplateBinding Height}"
+                                        CornerRadius="20">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#3A4A66"/>
+                                        <Setter Property="Foreground" Value="#4CAF50"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter Property="Background" Value="#2E3B55"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <!-- Style for Slider -->
+                <Style x:Key="CustomSlider" TargetType="Slider">
+                    <Setter Property="Background" Value="#3A4A66"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Height" Value="5"/>
+                    <Setter Property="IsMoveToPointEnabled" Value="True"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Slider">
+                                <Grid>
+                                    <Track x:Name="PART_Track">
+                                        <Track.Thumb>
+                                            <Thumb Width="10" Height="10">
+                                                <Thumb.Template>
+                                                    <ControlTemplate>
+                                                        <Ellipse Fill="#4CAF50" Stroke="#2E3B55" StrokeThickness="1"/>
+                                                    </ControlTemplate>
+                                                </Thumb.Template>
+                                            </Thumb>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <!-- ContextMenu Styles -->
+                <Style x:Key="ContextMenuStyle" TargetType="ContextMenu">
+                    <Setter Property="Background" Value="#2E3B55"/>
+                    <Setter Property="BorderBrush" Value="#4CAF50"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ContextMenu">
+                                <Border Background="{TemplateBinding Background}" 
+                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                        CornerRadius="5">
+                                    <StackPanel IsItemsHost="True"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style x:Key="MenuItemStyle" TargetType="MenuItem">
+                    <Setter Property="Background" Value="#2E3B55"/>
+                    <Setter Property="Foreground" Value="#FFFFFF"/>
+                    <Setter Property="FontSize" Value="14"/>
+                    <Setter Property="Padding" Value="10,5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="MenuItem">
+                                <Border Background="{TemplateBinding Background}" 
+                                        BorderThickness="0">
+                                    <Grid>
+                                        <ContentPresenter Content="{TemplateBinding Header}" 
+                                                          Margin="{TemplateBinding Padding}"/>
+                                    </Grid>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#3A4A66"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+        
+        <!--#endregion-->
+
+        <!--#region Style for Artist Details-->
+        
+            
+        <!--#endregion-->
+        
     </Application.Resources>
 </Application>
