@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicAppComplete"
         mc:Ignorable="d"
-          Title="Song Details" Height="350" Width="350" WindowStartupLocation="CenterScreen">
+          Title="Song Details" Height="350" Width="350" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Grid Background="#FF2D2D30">
         <Grid Margin="20">
             <Grid.RowDefinitions>
@@ -19,7 +19,7 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="Add Song" FontSize="20" FontWeight="Bold" Foreground="White" 
+            <Label  x:Name="SongDetailLable" Content="Add Song"  FontSize="20" FontWeight="Bold" Foreground="White" 
                        HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,20"/>
 
             <!-- Song Title -->
@@ -35,7 +35,6 @@
             <StackPanel Grid.Row="2" Margin="0,0,0,10">
                 <TextBlock Text="Artist*" Foreground="White" FontSize="14"/>
                 <ComboBox x:Name="ArtistComboBox" Width="300" Margin="0,5,0,0" 
-                          DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding ArtistId}"
                           Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00"/>
                 <TextBlock x:Name="ArtistErrorTextBlock" Text="Artist is required" Foreground="Red" 
                            FontSize="12" Visibility="Collapsed" Margin="0,5,0,0"/>
@@ -61,7 +60,7 @@
                     <TextBox x:Name="PathTextBox" Text="" Margin="0,5,5,0" 
                              Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00"/>
                     <Button Grid.Column="1" Content="Browse" Width="80" Height="25" Margin="5,5,0,0" 
-                            Background="#FF00FF00" Foreground="White" BorderThickness="0" >
+                            Background="#FF00FF00" Foreground="White" BorderThickness="0" Click="TakeDataFromBrowser" >
                         <Button.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Template">
@@ -85,7 +84,7 @@
 
             <!-- Save Button -->
             <Button Content="Save" Grid.Row="5" Width="100" Height="30" Background="#FF00FF00" 
-                    Foreground="White" BorderThickness="0" >
+                    Foreground="White" BorderThickness="0" Click="SaveBtn" >
                 <Button.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Template">

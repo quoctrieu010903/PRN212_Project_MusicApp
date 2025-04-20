@@ -10,5 +10,9 @@ namespace PRN212.Assignment.BLL.Services
         private PlayListRepo _repo = new();
 
         public List<PlayList> GetPlaylist() => _repo.getAllPlayList();
+        public void DeletePlayList(PlayList playList)
+        {
+            _repo.DeletePlayList(playList);
+        }
     }
 }
