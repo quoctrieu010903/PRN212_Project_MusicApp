@@ -18,25 +18,30 @@ namespace PRN212.Assignment.DAL.Repositories
             _dbContext = new();
             return _dbContext.Songs.Include(x=> x.Artist).ToList();
         }
-        public void CreatePlayList(Song song)
+        public void CreateSong(Song song)
         {
             _dbContext = new();
             _dbContext.Songs.Add(song);
             _dbContext.SaveChanges();
 
         }
-        public void UpdatePlayList(Song song)
+        public void UpdateSong(Song song)
         {
             _dbContext = new();
             _dbContext.Songs.Update(song);
             _dbContext.SaveChanges();
         }
-        public void DeletePlayList(Song song)
+        public void DeleteSong(Song song)
         {
             _dbContext = new();
             _dbContext.Songs.Remove(song);
             _dbContext.SaveChanges();
 
+        }
+        public int getTotalSong(Song song)
+        {
+            _dbContext= new();
+            return _dbContext.Songs.Count();
         }
     }
 }

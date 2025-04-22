@@ -43,6 +43,7 @@ namespace MusicAppComplete
             var playList = _playListService.GetPlaylist(); // gọi db
 
             Playlists = new ObservableCollection<PlayList>(playList);
+           
             var songs = _songService.getAllSong();
             SongListBox.ItemsSource = songs;
             DataContext = this;
@@ -56,7 +57,7 @@ namespace MusicAppComplete
 
             SongDetail songDetail = new SongDetail();
             songDetail.SongDetailLable.Content = "Create a new Song";
-
+            songDetail.IdStackPanel.Visibility = Visibility.Collapsed;
             songDetail.ShowDialog();
 
         }
@@ -90,6 +91,26 @@ namespace MusicAppComplete
 
             // 4. Refresh the UI
             LoadPlaylist();
+        }
+
+        private void EditSong_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            Song selectedSong = menuItem?.DataContext as Song;
+
+            SongDetail songDetail = new SongDetail();
+            songDetail.SongDetailLable.Content = "Update Song";
+            songDetail.EditedOne = selectedSong;
+           
+
+            songDetail.ShowDialog();
+            LoadPlaylist(); 
+
+        }
+
+        private void PlayBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

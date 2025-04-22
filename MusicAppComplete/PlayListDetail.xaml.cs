@@ -29,6 +29,7 @@ namespace MusicAppComplete
         private void AddSongButton_Click(object sender, RoutedEventArgs e)
         {
             SongDetail songDetail = new SongDetail();
+
             songDetail.ShowDialog();
         }
 

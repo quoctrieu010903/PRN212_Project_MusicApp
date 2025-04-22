@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using PRN212.Assignment.DAL.Entities;
 
 namespace PRN212.Assignment.DAL.Repositories
@@ -10,7 +11,7 @@ namespace PRN212.Assignment.DAL.Repositories
         public List<PlayList> getAllPlayList()
         {
             _dbContext = new();
-            return _dbContext.Playlists.ToList();
+            return _dbContext.Playlists.Include(x=>x.PlaylistSongs).ToList();
         }
         public void CreatePlayList(PlayList playList)
         {

@@ -24,7 +24,15 @@ namespace MusicAppComplete
         {
             InitializeComponent();
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            FillComboBox();
+            if (EditedOne != null)
+            {
+                FillElement();
+            }
 
+        }
         private void SaveBtn(object sender, RoutedEventArgs e)
         {
             
@@ -34,7 +42,7 @@ namespace MusicAppComplete
             }
 
             Song song =  new Song(); // sau do gan gia 
-
+            song.Id = int.Parse(IdTextBox.Text);
             song.Title = TitleTextBox.Text;
             song.ArtistId = int.Parse(ArtistComboBox.SelectedValue.ToString());
             song.Duration = TimeSpan.Parse(DurationTextBox.Text); 
@@ -112,11 +120,7 @@ namespace MusicAppComplete
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-           FillComboBox();
-
-        }
+     
         private void FillComboBox()
         {
             ArtistComboBox.ItemsSource = _artistService.GetArtists();
@@ -126,6 +130,18 @@ namespace MusicAppComplete
             ArtistComboBox.SelectedValuePath = "ArtistId";
             // vào chấm SelectedValue 
             // lấy đyicwj id hoạcw set id vào để nhẩy 
+        }
+
+        private void FillElement()
+        {
+
+            IdTextBox.Text = EditedOne.Id.ToString();
+            TitleTextBox.Text = EditedOne.Title;
+            ArtistComboBox.SelectedValue = EditedOne.ArtistId;
+
+            DurationTextBox.Text = EditedOne.Duration.ToString(@"hh\:mm\:ss");
+            PathTextBox.Text = EditedOne.Path;
+
         }
     }
 }
