@@ -28,7 +28,8 @@ namespace MusicAppComplete
         private bool isDraggingSlider = false;
         private Song currentSong;
         private bool isPlaying = false;
-
+        private bool isRepeating = false; // Tracks repeat mode
+        private bool isSequential = true; // Tracks sequential playback mode (default: true)
 
         public MainWindow()
         {
@@ -305,6 +306,21 @@ namespace MusicAppComplete
                 ResetPlaybackState();
                 PlayBtn_Click(sender, new RoutedEventArgs());
             }
+        }
+
+        private void RepeatButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            isRepeating = !isRepeating;
+            RepeatButton.Content = isRepeating ? "🔁" : "🔁"; // Update button content
+          
+
+        }
+
+        private void SequentialButton_Click(object sender, RoutedEventArgs e)
+        {
+            isSequential = !isSequential;
+            SequentialButton.Content = isSequential ? "➡️" : "🔀"; // Update button content
         }
     }
 }
