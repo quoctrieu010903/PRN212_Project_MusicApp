@@ -12,7 +12,7 @@
         Background="#1C2526"
         >
     <Border Background="#1C2526" CornerRadius="10">
-        <Grid>
+        <Grid x:Name="MainGrid" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
@@ -59,7 +59,8 @@
                                  Background="Transparent" 
                                  BorderThickness="0" 
                                  Height="500" 
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 SelectionChanged="SongListBox_SelectionChanged">
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem" BasedOn="{StaticResource SongListItemStyle}"/>
                             </ListBox.ItemContainerStyle>
@@ -167,22 +168,72 @@
                     </ItemsControl>
                 </Border>
             </StackPanel>
-
             <!-- Playback Controls -->
-            <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Background="#263238">
-                <Button Content="⏮" Style="{StaticResource ControlButtonStyle}"/>
-                <Button Content="▶" Style="{StaticResource ControlButtonStyle}" Click="PlayBtn_Click"/>
-                <Button Content="⏭" Style="{StaticResource ControlButtonStyle}"/>
-                <Slider x:Name="PlaybackSlider" 
-                        Width="200" 
-                        Margin="5" 
-                        Style="{StaticResource CustomSlider}"/>
-                <TextBlock x:Name="PlaybackTimeTextBlock" 
-                           Text="0:00 / 0:00" 
-                           Foreground="#FFFFFF" 
-                           VerticalAlignment="Center" 
-                           Margin="5"/>
-            </StackPanel>
+            <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="#263238" CornerRadius="0,0,10,10" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Navigation Buttons -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Playback Slider and Time -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Volume Control -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Navigation Buttons -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0">
+                        <Button x:Name="PreviousButton" 
+                        Content="⏮" 
+                        Style="{StaticResource ControlButtonStyle}" 
+                        Click="PreviousTrack_Click" 
+                        ToolTip="Previous Track"
+                        Margin="0,0,5,0" Height="32"/>
+                        <Button x:Name="PlayButton" 
+                        Content="▶" 
+                        Style="{StaticResource ControlButtonStyle}" 
+                        Click="PlayBtn_Click" 
+                        ToolTip="Play/Pause"
+                        Margin="0,0,5,0" Height="31"/>
+                        <Button x:Name="NextButton" 
+                        Content="⏭" 
+                        Style="{StaticResource ControlButtonStyle}" 
+                        Click="NextTrack_Click" 
+                        ToolTip="Next Track" Height="31"/>
+                    </StackPanel>
+
+                    <!-- Playback Slider and Time -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
+                        <Slider x:Name="PlaybackSlider" Width="250" Minimum="0" Style="{StaticResource CustomSlider}" ValueChanged="PlaybackSlider_ValueChanged" PreviewMouseLeftButtonDown="PlaybackSlider_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="PlaybackSlider_PreviewMouseLeftButtonUp" ToolTip="Seek Position" Margin="0,0,10,0" Height="21"/>
+                        <TextBlock x:Name="PlaybackTimeTextBlock" 
+                       Text="0:00 / 0:00" 
+                       Foreground="#E0E0E0" 
+                       FontSize="14" 
+                       FontWeight="SemiBold" 
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource SecondaryTextStyle}"/>
+                    </StackPanel>
+                    <!-- Volume Control -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
+                        <TextBlock Text="🔊" 
+                       Foreground="#E0E0E0" 
+                       FontSize="16" 
+                       VerticalAlignment="Center" 
+                       Margin="0,0,5,0" 
+                       ToolTip="Volume"/>
+                        <Slider x:Name="VolumeSlider" 
+                    Width="101" 
+                    Minimum="0" 
+                    Maximum="1" 
+                    Value="0.5" 
+                    Style="{StaticResource CustomSlider}" 
+                    ValueChanged="VolumeSlider_ValueChanged"
+                    ToolTip="Adjust Volume"
+                    VerticalAlignment="Center" Height="13"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+
         </Grid>
     </Border>
 

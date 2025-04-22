@@ -18,7 +18,7 @@ namespace PRN212.Assignment.DAL.Repositories
             _dbContext = new();
             return _dbContext.Songs.Include(x=> x.Artist).ToList();
         }
-        public void CreateSong(Song song)
+        public void CreateSong(Song  song)
         {
             _dbContext = new();
             _dbContext.Songs.Add(song);

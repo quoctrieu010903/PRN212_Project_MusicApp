@@ -42,7 +42,6 @@ namespace MusicAppComplete
             }
 
             Song song =  new Song(); // sau do gan gia 
-            song.Id = int.Parse(IdTextBox.Text);
             song.Title = TitleTextBox.Text;
             song.ArtistId = int.Parse(ArtistComboBox.SelectedValue.ToString());
             song.Duration = TimeSpan.Parse(DurationTextBox.Text); 
@@ -56,6 +55,8 @@ namespace MusicAppComplete
             }
             else
             {
+                song.Id = int.Parse(IdTextBox.Text);
+
                 _service.UpdateSong(song);
             }
             this.Hide();
