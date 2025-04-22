@@ -41,7 +41,7 @@
             <StackPanel Grid.Row="3" Margin="0,0,0,10">
                 <TextBlock Text="Artist*" Foreground="White" FontSize="14"/>
                 <ComboBox x:Name="ArtistComboBox" Width="300" Margin="0,5,0,0" 
-                          Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00"/>
+                          Background="#FF3C3C3E" Foreground="Black" BorderBrush="#FF00FF00"/>
                 <TextBlock x:Name="ArtistErrorTextBlock" Text="Artist is required" Foreground="Red" 
                            FontSize="12" Visibility="Collapsed" Margin="0,5,0,0"/>
             </StackPanel>

@@ -3,9 +3,11 @@ using System.Net.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using PRN212.Assignment.BLL.Services;
 using PRN212.Assignment.DAL.Entities;
+using Unosquare.FFME.Common;
 
 
 namespace MusicAppComplete
@@ -19,10 +21,48 @@ namespace MusicAppComplete
         private SongService _songService { get; set; } = new() { };
         public ObservableCollection<PlayList> Playlists { get; set; } = new ObservableCollection<PlayList>();
         public PlayList selectedPlayList { get; set; }
+
+        // Play Control
+        private MediaElement mediaPlayer = new MediaElement();
+        private DispatcherTimer playbackTimer;
+        private bool isDraggingSlider = false;
+        private Song currentSong;
+        private bool isPlaying = false;
+
+
         public MainWindow()
         {
             InitializeComponent();
             LoadPlaylist();
+            InitializeMediaPlayer();
+            InitializePlaybackTimer();
+        }
+        private void InitializeMediaPlayer()
+        {
+
+            mediaPlayer.LoadedBehavior = MediaState.Manual;
+            mediaPlayer.UnloadedBehavior = MediaState.Manual;
+            mediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
+            mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
+            mediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
+            Grid.SetRow(mediaPlayer, 0);
+            Grid.SetColumn(mediaPlayer, 0);
+            MainGrid.Children.Add(mediaPlayer);
+        }
+
+        private void MediaPlayer_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
+        {
+            MessageBox.Show($"Error playing song: {e.ErrorException.Message}", "Playback Error");
+            ResetPlaybackState();
+        }
+
+        private void InitializePlaybackTimer()
+        {
+            playbackTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            playbackTimer.Tick += PlaybackTimer_Tick;
         }
 
         private void AddPlaylistBtn(object sender, RoutedEventArgs e)
@@ -59,6 +99,7 @@ namespace MusicAppComplete
             songDetail.SongDetailLable.Content = "Create a new Song";
             songDetail.IdStackPanel.Visibility = Visibility.Collapsed;
             songDetail.ShowDialog();
+            LoadPlaylist();
 
         }
 
@@ -108,9 +149,162 @@ namespace MusicAppComplete
 
         }
 
+
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (currentSong == null)
+            {
+                MessageBox.Show("Please select a song to play.", "No Song Selected");
+                return;
+            }
 
+            if (mediaPlayer.Source == null || mediaPlayer.Source.OriginalString != currentSong.Path)
+            {
+                mediaPlayer.LoadedBehavior = MediaState.Manual;
+                mediaPlayer.Source = new Uri(currentSong.Path);
+                MessageBox.Show(mediaPlayer.Source.ToString());
+                mediaPlayer.Play();
+                isPlaying = true;
+                PlayButton.Content = "⏸";
+                playbackTimer.Start();
+            }
+            else
+            {
+                if (isPlaying)
+                {
+                    mediaPlayer.Pause();
+                    isPlaying = false;
+                    PlayButton.Content = "▶";
+                    playbackTimer.Stop();
+                }
+                else
+                {
+                    mediaPlayer.Play();
+                    isPlaying = true;
+                    PlayButton.Content = "⏸";
+                    playbackTimer.Start();
+                }
+            }
+        }
+
+        private void PlaybackTimer_Tick(object sender, EventArgs e)
+        {
+            if (!isDraggingSlider && mediaPlayer.Position.TotalSeconds <= PlaybackSlider.Maximum)
+            {
+                PlaybackSlider.Value = mediaPlayer.Position.TotalSeconds;
+                UpdatePlaybackTimeText();
+            }
+        }
+        private void PreviousTrack_Click(object sender, RoutedEventArgs e)
+        {
+            if (SongListBox.Items.Count == 0)
+                return;
+
+            int currentIndex = SongListBox.SelectedIndex;
+            int newIndex = currentIndex - 1;
+
+            if (newIndex < 0)
+            {
+                newIndex = SongListBox.Items.Count - 1; // Wrap around to last song
+            }
+
+            SongListBox.SelectedIndex = newIndex;
+        }
+
+        private void NextTrack_Click(object sender, RoutedEventArgs e)
+        {
+            if (SongListBox.Items.Count == 0)
+                return;
+
+            int currentIndex = SongListBox.SelectedIndex;
+            int newIndex = currentIndex + 1;
+
+            if (newIndex >= SongListBox.Items.Count)
+            {
+                newIndex = 0; // Wrap around to first song
+            }
+
+            SongListBox.SelectedIndex = newIndex;
+
+        }
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+            mediaPlayer.Volume = VolumeSlider.Value;
+        }
+
+        private void MediaPlayer_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            PlaybackSlider.Maximum = mediaPlayer.NaturalDuration.HasTimeSpan
+                ? mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds
+                : 0;
+            UpdatePlaybackTimeText();
+        }
+
+        private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            NextTrack_Click(sender, e); // Auto-play next track
+        }
+
+
+        private void UpdatePlaybackTimeText()
+        {
+            TimeSpan currentPosition = mediaPlayer.Position;
+            TimeSpan totalDuration = mediaPlayer.NaturalDuration.HasTimeSpan
+                ? mediaPlayer.NaturalDuration.TimeSpan
+                : TimeSpan.Zero;
+
+            string currentText = $"{currentPosition.Minutes:D2}:{currentPosition.Seconds:D2}";
+            string totalText = $"{totalDuration.Minutes:D2}:{totalDuration.Seconds:D2}";
+            PlaybackTimeTextBlock.Text = $"{currentText} / {totalText}";
+        }
+
+        private async Task ResetPlaybackState()
+        {
+            mediaPlayer.Stop();
+            mediaPlayer.Source = null;
+            PlaybackSlider.Value = 0;
+            PlayButton.Content = "▶";
+            playbackTimer.Stop();
+            PlaybackTimeTextBlock.Text = "0:00 / 0:00";
+        }
+
+        private void PlaybackSlider_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            isDraggingSlider = true;
+
+        }
+
+        private void PlaybackSlider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            isDraggingSlider = false;
+            mediaPlayer.Position = TimeSpan.FromSeconds(PlaybackSlider.Value);
+            UpdatePlaybackTimeText();
+        }
+
+        private void PlaybackSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (isDraggingSlider)
+            {
+                TimeSpan newPosition = TimeSpan.FromSeconds(PlaybackSlider.Value);
+                TimeSpan totalDuration = mediaPlayer.NaturalDuration.HasTimeSpan
+                    ? mediaPlayer.NaturalDuration.TimeSpan
+                    : TimeSpan.Zero;
+                string currentText = $"{newPosition.Minutes:D2}:{newPosition.Seconds:D2}";
+                string totalText = $"{totalDuration.Minutes:D2}:{totalDuration.Seconds:D2}";
+                PlaybackTimeTextBlock.Text = $"{currentText} / {totalText}";
+            }
+
+        }
+
+        private void SongListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SongListBox.SelectedItem is Song selectedSong)
+            {
+                currentSong = selectedSong;
+                ResetPlaybackState();
+                PlayBtn_Click(sender, new RoutedEventArgs());
+            }
         }
     }
 }
