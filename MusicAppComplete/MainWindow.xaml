@@ -82,7 +82,7 @@
                                             <ContextMenu Style="{StaticResource ContextMenuStyle}">
                                                 <MenuItem Header="Edit Song" 
                                                           Style="{StaticResource MenuItemStyle}" 
-                                                          />
+                                                          Click="EditSong_Click"/>
                                                 <MenuItem Header="Delete Song" 
                                                           Style="{StaticResource MenuItemStyle}" 
                                                            Click="DeleteSong_Click"/>
@@ -171,7 +171,7 @@
             <!-- Playback Controls -->
             <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Background="#263238">
                 <Button Content="⏮" Style="{StaticResource ControlButtonStyle}"/>
-                <Button Content="▶" Style="{StaticResource ControlButtonStyle}"/>
+                <Button Content="▶" Style="{StaticResource ControlButtonStyle}" Click="PlayBtn_Click"/>
                 <Button Content="⏭" Style="{StaticResource ControlButtonStyle}"/>
                 <Slider x:Name="PlaybackSlider" 
                         Width="200" 
