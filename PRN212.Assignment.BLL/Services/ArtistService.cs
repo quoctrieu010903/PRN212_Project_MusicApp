@@ -7,16 +7,7 @@ namespace PRN212.Assignment.BLL.Services
 {
     public class ArtistService
     {
-        private readonly ArtistRepository _repository;
-
-        public ArtistService(MusicAppDbContext context)
-        {
-            _repository = new ArtistRepository(context);
-        }
-
-        public ArtistService()
-        {
-        }
+        private readonly ArtistRepository _repository = new ArtistRepository() ;
 
         public List<Artist> GetArtists()
         {
