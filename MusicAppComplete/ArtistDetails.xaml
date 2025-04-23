@@ -5,8 +5,208 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicAppComplete"
         mc:Ignorable="d"
-        Title="ArtistDetails" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Quản lý nghệ sĩ"
+        Height="500"
+        Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="#1E1E2F">
+    <Window.Resources>
+        <!-- Custom Button Style -->
+        <Style x:Key="CustomButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3F51B5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#5C6BC0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#3949AB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TextBox Style -->
+        <Style x:Key="CustomTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#2A2A3D"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="BorderBrush" Value="#4A4A6A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3F51B5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="#1E1E2F" CornerRadius="15" Margin="15">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Quản lý nghệ sĩ"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       FontFamily="Segoe UI"
+                       Foreground="#E0E0E0"
+                       Margin="0,0,0,15"/>
+
+            <!-- Artist List -->
+            <Border Grid.Row="1"
+                    Background="#252540"
+                    CornerRadius="8"
+                    Padding="15">
+                <ListBox x:Name="ArtistListBox"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Padding" Value="5"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#3F51B5"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#333355"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Context Menu -->
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Sửa nghệ sĩ" Click="EditArtist_Click"/>
+                                        <MenuItem Header="Xóa nghệ sĩ" Click="DeleteArtist_Click"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+
+                                <!-- Artist Name -->
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Name}"
+                                           Foreground="#E0E0E0"
+                                           FontSize="15"
+                                           FontFamily="Segoe UI"
+                                           VerticalAlignment="Center"
+                                           Padding="5,0"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding Name}"/>
+
+                                <!-- Bio -->
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Bio, StringFormat='Bio: {0}'}"
+                                           Foreground="#B0B0B0"
+                                           FontSize="14"
+                                           FontFamily="Segoe UI"
+                                           TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center"
+                                           Padding="5,0"
+                                           ToolTip="{Binding Bio}"/>
+
+                                <!-- Edit Button -->
+                                <Button Grid.Column="2"
+                                        Content="Sửa"
+                                        Click="EditArtist_Click"
+                                        Style="{StaticResource CustomButtonStyle}"
+                                        Width="80"/>
+
+                                <!-- Delete Button -->
+                                <Button Grid.Column="3"
+                                        Content="Xóa"
+                                        Click="DeleteArtist_Click"
+                                        Style="{StaticResource CustomButtonStyle}"
+                                        Width="80"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- Input Form -->
+            <StackPanel Grid.Row="2" Margin="0,20,0,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Tên nghệ sĩ:"
+                               Foreground="#E0E0E0"
+                               FontSize="14"
+                               FontFamily="Segoe UI"
+                               Width="120"
+                               VerticalAlignment="Center"/>
+                    <TextBox x:Name="ArtistNameTextBox"
+                             Width="300"
+                             Style="{StaticResource CustomTextBoxStyle}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Tiểu sử:"
+                               Foreground="#E0E0E0"
+                               FontSize="14"
+                               FontFamily="Segoe UI"
+                               Width="120"
+                               VerticalAlignment="Top"/>
+                    <TextBox x:Name="ArtistBioTextBox"
+                             Width="300"
+                             Height="60"
+                             Style="{StaticResource CustomTextBoxStyle}"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Thêm nghệ sĩ"
+                            Click="AddArtist_Click"
+                            Style="{StaticResource CustomButtonStyle}"
+                            Width="120"/>
+                    <Button Content="Lưu cập nhật"
+                            Click="SaveArtist_Click"
+                            Style="{StaticResource CustomButtonStyle}"
+                            Width="120"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
 </Window>

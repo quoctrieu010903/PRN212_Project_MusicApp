@@ -322,6 +322,11 @@ namespace MusicAppComplete
             isSequential = !isSequential;
             SequentialButton.Content = isSequential ? "➡️" : "🔀"; // Update button content
         }
+        private void AddArtist_Click(object sender, RoutedEventArgs e)
+        {
+            var artistDetails = new ArtistDetails();
+            artistDetails.ShowDialog(); // Mở cửa sổ ArtistDetails dưới dạng modal
+        }
     }
 }
 
