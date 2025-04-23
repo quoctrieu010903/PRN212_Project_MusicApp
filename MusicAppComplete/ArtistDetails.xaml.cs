@@ -8,13 +8,13 @@ namespace MusicAppComplete
 {
     public partial class ArtistDetails : Window
     {
-        private readonly ArtistService _artistService;
+        private readonly ArtistService _artistService = new();
         private Artist _selectedArtist = null;
 
         public ArtistDetails()
         {
             InitializeComponent();
-            _artistService = new ArtistService(new MusicAppDbContext());
+            //_artistService = new ArtistService(new MusicAppDbContext());
             LoadArtists();
         }
 

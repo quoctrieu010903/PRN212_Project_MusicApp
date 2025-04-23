@@ -7,26 +7,26 @@ namespace PRN212.Assignment.DAL.Repositories
 {
     public class ArtistRepository
     {
-        private readonly MusicAppDbContext _context;
+        private  MusicAppDbContext _context;
 
-        public ArtistRepository(MusicAppDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+      
 
         public List<Artist> getAllArtist()
         {
+            _context = new MusicAppDbContext();
             return _context.Artists.ToList();
         }
 
         public void CreateArtist(Artist artist)
         {
+            _context = new();
             _context.Artists.Add(artist);
             _context.SaveChanges();
         }
 
         public void UpdateArtist(Artist artist)
         {
+            _context = new();
             if (artist == null || artist.ArtistId <= 0)
             {
                 throw new ArgumentException("Thông tin nghệ sĩ không hợp lệ hoặc thiếu ArtistId.");
@@ -47,6 +47,7 @@ namespace PRN212.Assignment.DAL.Repositories
 
         public void DeleteArtist(Artist artist)
         {
+            _context = new();
             var existingArtist = _context.Artists.Find(artist.ArtistId);
             if (existingArtist != null)
             {
