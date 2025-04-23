@@ -39,7 +39,7 @@
                     <Button Content="Add Playlist" Style="{StaticResource CustomButtonStyle}" Click="AddPlaylistBtn"/>
                     <Button Content="Add Folder" Style="{StaticResource CustomButtonStyle}" Click="AddFolderbtn"/>
                     <Button Content="Add Song" Style="{StaticResource CustomButtonStyle}" Click="AddSongBtn"/>
-                    <Button Content="Add Artist" Style="{StaticResource CustomButtonStyle}"/>
+                    <Button Content="Add Artist" Style="{StaticResource CustomButtonStyle}" Click="AddArtist_Click"/>
                 </StackPanel>
             </Grid>
 
