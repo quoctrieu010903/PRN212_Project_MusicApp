@@ -124,14 +124,21 @@
                 <TextBlock Text="All Playlists" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource SectionBorderStyle}">
-                    <ListBox ItemsSource="{Binding Playlists}" MaxHeight="500" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 SelectionChanged="Playlist_SelectionChanged" >
+                    <ListBox ItemsSource="{Binding Playlists}"
+             MaxHeight="500"
+             Background="#2E3B55"
+             BorderThickness="0"
+             ScrollViewer.VerticalScrollBarVisibility="Auto"
+             SelectionChanged="Playlist_SelectionChanged">
+
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource PlaylistItemStyle}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <!-- khoảng trống cố định -->
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
@@ -139,29 +146,32 @@
                                         <Grid.ContextMenu>
                                             <ContextMenu Style="{StaticResource ContextMenuStyle}">
                                                 <MenuItem Header="Edit Playlist" 
-                                              Style="{StaticResource MenuItemStyle}" 
-                                              Click="EditPlaylist_Click"
-                                              DataContext="{Binding}" />
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                          />
                                                 <MenuItem Header="Delete Playlist" 
-                                              Style="{StaticResource MenuItemStyle}" 
-                                              Click="DeletePlaylist_Click"
-                                              DataContext="{Binding}" />
+                                                          Style="{StaticResource MenuItemStyle}" 
+                                                         />
                                             </ContextMenu>
                                         </Grid.ContextMenu>
 
-                                        <!-- Playlist Name -->
-                                        <TextBlock Grid.Column="0" Foreground="Black"
-                                       Text="{Binding Name}" 
-                                       Style="{StaticResource PrimaryTextStyle}"/>
+                                        <TextBlock Grid.Column="0" 
+               Text="{Binding Name}" 
+               Style="{StaticResource PrimaryTextStyle}"
+               Margin="0,0,20,0"/>
+                                        <!-- Thêm margin bên phải -->
 
                                         <!-- Playlist Song Count -->
-
+                                        <TextBlock Grid.Column="1" 
+               Text="{Binding PlaylistSongs.Count}" 
+               Style="{StaticResource SecondaryTextStyle}" 
+               HorizontalAlignment="Right"/>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Border>
+
 
                 <!-- Song List for Selected Playlist -->
                 <TextBlock Text="Songs in Playlist" Style="{StaticResource SubHeaderStyle}" Margin="10,10,10,0"/>
