@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Net.WebSockets;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,7 +31,8 @@ namespace MusicAppComplete
         private bool isPlaying = false;
         private bool isRepeating = false; // Tracks repeat mode
         private bool isSequential = true; // Tracks sequential playback mode (default: true)
-
+        private List<Song> shuffleSongList = new List<Song>();
+        private int currentSongIndex { get; set; } = -1;  // index in song List OR shuffled list
         public MainWindow()
         {
             InitializeComponent();
@@ -84,9 +86,11 @@ namespace MusicAppComplete
             var playList = _playListService.GetPlaylist(); // gọi db
 
             Playlists = new ObservableCollection<PlayList>(playList);
-           
+
             var songs = _songService.getAllSong();
             SongListBox.ItemsSource = songs;
+            shuffleSongList = songs.ToList();
+            TotalSongsTextBlock.Text = "Total Songs: " + _songService.getAllSong().Count.ToString();
             DataContext = this;
 
 
@@ -143,48 +147,73 @@ namespace MusicAppComplete
             SongDetail songDetail = new SongDetail();
             songDetail.SongDetailLable.Content = "Update Song";
             songDetail.EditedOne = selectedSong;
-           
+
 
             songDetail.ShowDialog();
-            LoadPlaylist(); 
+            LoadPlaylist();
 
         }
 
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (currentSong == null)
+            if (SongListBox.Items.Count == 0)
             {
-                MessageBox.Show("Please select a song to play.", "No Song Selected");
+                MessageBox.Show("No songs available to play.", "No Songs");
                 return;
             }
 
-            if (mediaPlayer.Source == null || mediaPlayer.Source.OriginalString != currentSong.Path)
+            if (currentSong == null)
             {
-                mediaPlayer.LoadedBehavior = MediaState.Manual;
-                mediaPlayer.Source = new Uri(currentSong.Path);
-                MessageBox.Show(mediaPlayer.Source.ToString());
-                mediaPlayer.Play();
-                isPlaying = true;
-                PlayButton.Content = "⏸";
-                playbackTimer.Start();
-            }
-            else
-            {
-                if (isPlaying)
+
+                if (isSequential)
                 {
-                    mediaPlayer.Pause();
-                    isPlaying = false;
-                    PlayButton.Content = "▶";
-                    playbackTimer.Stop();
+                    currentSongIndex = 0;
+                    currentSong = SongListBox.Items[0] as Song;
                 }
                 else
                 {
+                    currentSongIndex = new Random().Next(0, shuffleSongList.Count);
+                    currentSong = shuffleSongList[currentSongIndex];
+                }
+                SongListBox.SelectedItem = currentSong;
+            }
+            try
+            {
+
+                if (mediaPlayer.Source == null || mediaPlayer.Source.OriginalString != currentSong.Path)
+                {
+                    mediaPlayer.LoadedBehavior = MediaState.Manual;
+                    mediaPlayer.Source = new Uri(currentSong.Path);
+                    MessageBox.Show(mediaPlayer.Source.ToString());
                     mediaPlayer.Play();
                     isPlaying = true;
                     PlayButton.Content = "⏸";
                     playbackTimer.Start();
                 }
+                else
+                {
+                    if (isPlaying)
+                    {
+                        mediaPlayer.Pause();
+                        isPlaying = false;
+                        PlayButton.Content = "▶";
+                        playbackTimer.Stop();
+                    }
+                    else
+                    {
+                        mediaPlayer.Play();
+                        isPlaying = true;
+                        PlayButton.Content = "⏸";
+                        playbackTimer.Start();
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to play song: {ex.Message}", "Playback Error");
+                ResetPlaybackState();
             }
         }
 
@@ -201,32 +230,34 @@ namespace MusicAppComplete
             if (SongListBox.Items.Count == 0)
                 return;
 
-            int currentIndex = SongListBox.SelectedIndex;
-            int newIndex = currentIndex - 1;
-
-            if (newIndex < 0)
+            if (isSequential)
             {
-                newIndex = SongListBox.Items.Count - 1; // Wrap around to last song
+                currentSongIndex = SongListBox.SelectedIndex;
+                currentSongIndex = currentSongIndex <= 0 ? SongListBox.Items.Count - 1 : currentSongIndex - 1;
+            }
+            else
+            {
+                currentSongIndex = currentSongIndex <= 0 ? shuffleSongList.Count - 1 : currentSongIndex - 1;
+                currentSong = shuffleSongList[currentSongIndex];
             }
 
-            SongListBox.SelectedIndex = newIndex;
+            SongListBox.SelectedIndex = isSequential ? currentSongIndex : SongListBox.Items.IndexOf(currentSong);
         }
 
         private void NextTrack_Click(object sender, RoutedEventArgs e)
         {
-            if (SongListBox.Items.Count == 0)
-                return;
-
-            int currentIndex = SongListBox.SelectedIndex;
-            int newIndex = currentIndex + 1;
-
-            if (newIndex >= SongListBox.Items.Count)
+            if (isSequential)
             {
-                newIndex = 0; // Wrap around to first song
+                currentSongIndex = SongListBox.SelectedIndex;
+                currentSongIndex = currentSongIndex >= SongListBox.Items.Count - 1 ? 0 : currentSongIndex + 1;
+            }
+            else
+            {
+                currentSongIndex = currentSongIndex >= shuffleSongList.Count - 1 ? 0 : currentSongIndex + 1;
+                currentSong = shuffleSongList[currentSongIndex];
             }
 
-            SongListBox.SelectedIndex = newIndex;
-
+            SongListBox.SelectedIndex = isSequential ? currentSongIndex : SongListBox.Items.IndexOf(currentSong);
         }
         private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -244,7 +275,17 @@ namespace MusicAppComplete
 
         private void MediaPlayer_MediaEnded(object sender, RoutedEventArgs e)
         {
-            NextTrack_Click(sender, e); // Auto-play next track
+            if (isRepeating)
+            {
+                // Replay the same song
+                mediaPlayer.Position = TimeSpan.Zero;
+                mediaPlayer.Play();
+            }
+            else
+            {
+                // Play next song based on mode
+                NextTrack_Click(sender, e);
+            }
         }
 
 
@@ -313,7 +354,7 @@ namespace MusicAppComplete
 
             isRepeating = !isRepeating;
             RepeatButton.Content = isRepeating ? "🔁" : "🔁"; // Update button content
-          
+
 
         }
 
@@ -321,6 +362,18 @@ namespace MusicAppComplete
         {
             isSequential = !isSequential;
             SequentialButton.Content = isSequential ? "➡️" : "🔀"; // Update button content
+            if (!isSequential && SongListBox.Items.Count > 0)
+            {
+                // Shuffle songs when switching to random mode
+                shuffleSongList = SongListBox.Items.Cast<Song>().OrderBy(x => Guid.NewGuid()).ToList();
+                currentSongIndex = currentSong != null ? shuffleSongList.IndexOf(currentSong) : -1;
+            }
+            else
+            {
+                // Reset to original order for sequential mode
+                shuffleSongList = SongListBox.Items.Cast<Song>().ToList();
+                currentSongIndex = SongListBox.SelectedIndex;
+            }
         }
         private void AddArtist_Click(object sender, RoutedEventArgs e)
         {

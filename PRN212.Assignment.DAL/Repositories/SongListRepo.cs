@@ -43,5 +43,12 @@ namespace PRN212.Assignment.DAL.Repositories
             _dbContext= new();
             return _dbContext.Songs.Count();
         }
+        public List<Song> GetSongsByPlaylist(int playlistId)
+        {
+            return _dbContext.PlaylistSongs
+                .Where(ps => ps.PlaylistId == playlistId)
+                .Select(ps => ps.Song)
+                .ToList();
+        }
     }
 }
