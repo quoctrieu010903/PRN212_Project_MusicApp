@@ -120,24 +120,24 @@
             </StackPanel>
 
             <!-- Playlist Section -->
+            <!-- Playlist Section -->
             <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Margin="10">
                 <TextBlock Text="All Playlists" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource SectionBorderStyle}">
-                    <ListBox ItemsSource="{Binding Playlists}"
+                    <ListBox x:Name="PlaylistListBox" ItemsSource="{Binding Playlists}"
              MaxHeight="500"
              Background="#2E3B55"
              BorderThickness="0"
              ScrollViewer.VerticalScrollBarVisibility="Auto"
-             SelectionChanged="Playlist_SelectionChanged">
-
+             SelectionChanged="Playlist_SelectionChanged" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource PlaylistItemStyle}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="135"/>
                                             <!-- khoảng trống cố định -->
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
@@ -146,25 +146,29 @@
                                         <Grid.ContextMenu>
                                             <ContextMenu Style="{StaticResource ContextMenuStyle}">
                                                 <MenuItem Header="Edit Playlist" 
-                                                          Style="{StaticResource MenuItemStyle}" 
-                                                          />
+                                  Style="{StaticResource MenuItemStyle}" 
+                                  Click="EditPlaylist_Click"
+                                  DataContext="{Binding}" />
                                                 <MenuItem Header="Delete Playlist" 
-                                                          Style="{StaticResource MenuItemStyle}" 
-                                                         />
+                                  Style="{StaticResource MenuItemStyle}" 
+                                  Click="DeletePlaylist_Click"
+                                  DataContext="{Binding}" />
                                             </ContextMenu>
                                         </Grid.ContextMenu>
 
-                                        <TextBlock Grid.Column="0" 
-               Text="{Binding Name}" 
-               Style="{StaticResource PrimaryTextStyle}"
-               Margin="0,0,20,0"/>
-                                        <!-- Thêm margin bên phải -->
+                                        <!-- Playlist Name -->
+                                        <TextBlock Grid.Column="0"
+               Text="{Binding Name}"
+               Style="{StaticResource PrimaryTextStyle}" />
 
                                         <!-- Playlist Song Count -->
-                                        <TextBlock Grid.Column="1" 
-               Text="{Binding PlaylistSongs.Count}" 
-               Style="{StaticResource SecondaryTextStyle}" 
+                                        <TextBlock Grid.Column="2"
+               Text="{Binding PlaylistSongs.Count}"
+               Style="{StaticResource SecondaryTextStyle}"
                HorizontalAlignment="Right"/>
+
+                                        <!-- Playlist Song Count -->
+
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -172,13 +176,12 @@
                     </ListBox>
                 </Border>
 
-
                 <!-- Song List for Selected Playlist -->
                 <TextBlock Text="Songs in Playlist" Style="{StaticResource SubHeaderStyle}" Margin="10,10,10,0"/>
                 <TextBlock x:Name="TotalSongsTextBlocks" Text="Total Songs: 0" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,10"/>
 
                 <!-- Danh sách bài hát của Playlist đang chọn -->
-               
+
 
             </StackPanel>
             <!-- Playback Controls -->

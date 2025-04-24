@@ -20,7 +20,7 @@ namespace MusicAppComplete
     {
         private PlayListService _playListService { get; set; } = new();
         private SongService _songService { get; set; } = new() { };
-        public ObservableCollection<PlayList> Playlists { get; set; } = new ObservableCollection<PlayList>();
+        public ObservableCollection<PlayList> Playlists { get; set; }
         public PlayList selectedPlayList { get; set; }
 
         // Play Control
@@ -83,13 +83,17 @@ namespace MusicAppComplete
 
         private void LoadPlaylist()
         { // khởi tạo service
-            var playList = _playListService.GetPlaylist(); // gọi db
+            var playList = _playListService.GetPlaylist();
 
-            Playlists = new ObservableCollection<PlayList>(playList);
+     
+            PlaylistListBox.ItemsSource = null; 
+            PlaylistListBox.ItemsSource = playList;
 
             var songs = _songService.getAllSong();
+
             SongListBox.ItemsSource = songs;
             shuffleSongList = songs.ToList();
+
             TotalSongsTextBlock.Text = "Total Songs: " + _songService.getAllSong().Count.ToString();
             DataContext = this;
 
@@ -97,23 +101,23 @@ namespace MusicAppComplete
         }
         private void Playlist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Kiểm tra xem có playlist nào được chọn không
+           
             var selectedPlaylist = (sender as ListBox).SelectedItem as PlayList;
 
             if (selectedPlaylist != null)
             {
                 var songs = _playListService.GetPlaylistSong(selectedPlaylist.Id);
-                // Hiển thị các bài hát của playlist đã chọn
+            
                 SongListBox.ItemsSource = songs;
 
                 // Cập nhật số lượng bài hát
-                TotalSongsTextBlocks.Text = $"   Total Songs: {selectedPlaylist.PlaylistSongs.Count}";
+                //TotalSongsTextBlocks.Text = $"   Total Songs: {selectedPlaylist.PlaylistSongs.Count}";
             }
             else
             {
-                // Nếu không có playlist nào được chọn, đặt danh sách bài hát trống và số lượng là 0
+              
                 SongListBox.ItemsSource = null;
-                TotalSongsTextBlocks.Text = "Total Songs: 0";
+              //  TotalSongsTextBlocks.Text = "Total Songs: 0";
             }
         }
         private void AddSongBtn(object sender, RoutedEventArgs e)
@@ -136,7 +140,7 @@ namespace MusicAppComplete
         private void DeleteSong_Click(object sender, RoutedEventArgs e)
         {
 
-            // 1. Check if a playlist is selected
+            
             var menuItem = sender as MenuItem;
             Song selectedSong = menuItem?.DataContext as Song;
             if (selectedSong == null)
@@ -149,13 +153,13 @@ namespace MusicAppComplete
             MessageBoxResult answer = MessageBox.Show("Do you want to delete this Song?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (answer == MessageBoxResult.No)
             {
-                return; // User canceled the deletion
+                return; 
             }
 
-            // 3. Delete the playlist
-            _songService.DeleteSong(selectedSong);// Replace with your actual method
+           
+            _songService.DeleteSong(selectedSong);
 
-            // 4. Refresh the UI
+           
             LoadPlaylist();
         }
 
@@ -208,8 +212,8 @@ namespace MusicAppComplete
                 return;
             }
 
-            _playListService.DeletePlayList(selectedPlaylist); // Your actual delete method
-            LoadPlaylist(); // Reload playlists after deletion
+            _playListService.DeletePlayList(selectedPlaylist); 
+            LoadPlaylist(); 
         }
 
         private void PlayBtn_Click(object sender, RoutedEventArgs e)
