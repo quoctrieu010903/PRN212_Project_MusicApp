@@ -124,7 +124,7 @@
                 <TextBlock Text="All Playlists" Style="{StaticResource SectionHeaderStyle}"/>
 
                 <Border Style="{StaticResource SectionBorderStyle}">
-                    <ListBox ItemsSource="{Binding Playlists}" MaxHeight="500" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    <ListBox x:Name="PlaylistListBox" ItemsSource="{Binding Playlists}" MaxHeight="500" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  SelectionChanged="Playlist_SelectionChanged" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
