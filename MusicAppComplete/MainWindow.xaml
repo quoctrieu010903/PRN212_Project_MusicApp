@@ -131,13 +131,23 @@
              BorderThickness="0"
              ScrollViewer.VerticalScrollBarVisibility="Auto"
              SelectionChanged="Playlist_SelectionChanged" >
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource PlaylistItemStyle}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="135"/>
+                                            
                                             <!-- khoảng trống cố định -->
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
@@ -176,11 +186,7 @@
                     </ListBox>
                 </Border>
 
-                <!-- Song List for Selected Playlist -->
-                <TextBlock Text="Songs in Playlist" Style="{StaticResource SubHeaderStyle}" Margin="10,10,10,0"/>
-                <TextBlock x:Name="TotalSongsTextBlocks" Text="Total Songs: 0" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,10"/>
-
-                <!-- Danh sách bài hát của Playlist đang chọn -->
+                
 
 
             </StackPanel>
