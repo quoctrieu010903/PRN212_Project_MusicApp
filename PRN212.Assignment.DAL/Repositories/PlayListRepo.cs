@@ -20,6 +20,13 @@ namespace PRN212.Assignment.DAL.Repositories
                 .Select(ps => ps.Song)  // Chọn chỉ bài hát sau khi đã include Artist
                 .ToList();
         }
+
+        public void AddSongToPlaylist(PlaylistSong playlistSong)
+        {
+            _dbContext.PlaylistSongs.Add(playlistSong);
+            _dbContext.SaveChanges();
+        }
+
         public List<PlayList> getAllPlayList()
         {
             _dbContext = new();

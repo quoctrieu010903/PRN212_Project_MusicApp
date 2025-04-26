@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Net.WebSockets;
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -56,7 +58,7 @@ namespace MusicAppComplete
 
         private void MediaPlayer_MediaFailed(object? sender, ExceptionRoutedEventArgs e)
         {
-            MessageBox.Show($"Error playing song: {e.ErrorException.Message}", "Playback Error");
+            System.Windows.MessageBox.Show($"Error playing song: {e.ErrorException.Message}", "Playback Error");
             ResetPlaybackState();
         }
 
@@ -104,7 +106,7 @@ namespace MusicAppComplete
         private void Playlist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
            
-            var selectedPlaylist = (sender as ListBox).SelectedItem as PlayList;
+            var selectedPlaylist = (sender as System.Windows.Controls.ListBox).SelectedItem as PlayList;
 
             if (selectedPlaylist != null)
             {
@@ -138,6 +140,55 @@ namespace MusicAppComplete
 
         private void AddFolderbtn(object sender, RoutedEventArgs e)
         {
+            using (var dlg = new FolderBrowserDialog())
+            {
+                dlg.Description = "Select a folder containing audio files";
+                dlg.ShowNewFolderButton = false;
+
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var files = Directory
+                        .EnumerateFiles(dlg.SelectedPath, "*.*", SearchOption.AllDirectories)
+                        .Where(f => f.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)
+                                 || f.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)
+                                 || f.EndsWith(".flac", StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    int addedCount = 0;
+                    foreach (var path in files)
+                    {
+                        try
+                        {
+                            var tfile = TagLib.File.Create(path);
+                            string title = string.IsNullOrWhiteSpace(tfile.Tag.Title)
+                                ? Path.GetFileNameWithoutExtension(path)
+                                : tfile.Tag.Title;
+
+                            var song = new Song
+                            {
+                                Title = title,
+                                Duration = tfile.Properties.Duration,
+                                Path = path,
+                                ArtistId = 1 
+                            };
+
+                            _songService.CreateSong(song);
+                            addedCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Failed to add {path}: {ex.Message}");
+                        }
+                    }
+
+                    LoadPlaylist();
+                    System.Windows.MessageBox.Show(
+                        $"Imported {addedCount} songs from folder.",
+                        "Add Folder",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
 
         }
 
@@ -149,12 +200,12 @@ namespace MusicAppComplete
             Song selectedSong = menuItem?.DataContext as Song;
             if (selectedSong == null)
             {
-                MessageBox.Show("Please select a playlist before deleting", "Select a Song", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a playlist before deleting", "Select a Song", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             // 2. Confirm deletion
-            MessageBoxResult answer = MessageBox.Show("Do you want to delete this Song?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult answer = System.Windows.MessageBox.Show("Do you want to delete this Song?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (answer == MessageBoxResult.No)
             {
                 return; 
@@ -187,7 +238,7 @@ namespace MusicAppComplete
             PlayList selectedPlaylist = menuItem?.DataContext as PlayList;
             if (selectedPlaylist == null)
             {
-                MessageBox.Show("Please select a playlist to edit.", "No Playlist Selected", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a playlist to edit.", "No Playlist Selected", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -205,7 +256,7 @@ namespace MusicAppComplete
             var selectedPlaylist = PlaylistListBox.SelectedItem as PlayList;
             if (selectedPlaylist == null)
             {
-                MessageBox.Show("Please select a playlist first!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("Please select a playlist first!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -224,7 +275,7 @@ namespace MusicAppComplete
                     var existingSongs = repo.GetSongsByPlaylist(selectedPlaylist.Id);
                     if (existingSongs.Any(s => s.Id == selectedSong.Id))
                     {
-                        MessageBox.Show("This song is already in the selected playlist.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        System.Windows.MessageBox.Show("This song is already in the selected playlist.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
                         return;
                     }
 
@@ -252,11 +303,11 @@ namespace MusicAppComplete
             PlayList selectedPlaylist = menuItem?.DataContext as PlayList;
             if (selectedPlaylist == null)
             {
-                MessageBox.Show("Please select a playlist to delete.", "No Playlist Selected", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Please select a playlist to delete.", "No Playlist Selected", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            MessageBoxResult answer = MessageBox.Show("Do you want to delete this Playlist?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            MessageBoxResult answer = System.Windows.MessageBox.Show("Do you want to delete this Playlist?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (answer == MessageBoxResult.No)
             {
                 return;
@@ -270,7 +321,7 @@ namespace MusicAppComplete
         {
             if (SongListBox.Items.Count == 0)
             {
-                MessageBox.Show("No songs available to play.", "No Songs");
+                System.Windows.MessageBox.Show("No songs available to play.", "No Songs");
                 return;
             }
 
@@ -296,7 +347,7 @@ namespace MusicAppComplete
                 {
                     mediaPlayer.LoadedBehavior = MediaState.Manual;
                     mediaPlayer.Source = new Uri(currentSong.Path);
-                    MessageBox.Show(mediaPlayer.Source.ToString());
+                    System.Windows.MessageBox.Show(mediaPlayer.Source.ToString());
                     mediaPlayer.Play();
                     isPlaying = true;
                     PlayButton.Content = "⏸";
@@ -323,7 +374,7 @@ namespace MusicAppComplete
 
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to play song: {ex.Message}", "Playback Error");
+                System.Windows.MessageBox.Show($"Failed to play song: {ex.Message}", "Playback Error");
                 ResetPlaybackState();
             }
         }
@@ -342,7 +393,7 @@ namespace MusicAppComplete
                 return;
 
             IList<Song> sourceList;
-            ListBox activeListBox;
+            System.Windows.Controls.ListBox activeListBox;
 
             if (SongListBox.Items.Contains(currentSong))
             {
@@ -380,7 +431,7 @@ namespace MusicAppComplete
                 return;
 
             IList<Song> sourceList;
-            ListBox activeListBox;
+            System.Windows.Controls.ListBox activeListBox;
 
             if (SongListBox.Items.Contains(currentSong))
             {
