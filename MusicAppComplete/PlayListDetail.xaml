@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:MusicAppComplete"
         mc:Ignorable="d"
         Title="PlayListDetail" Height="248" Width="334" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
-    <Grid Background="#FF2D2D30" Margin="0,0,0,-105">
-        <Grid Margin="10,28,20,20">
+    <Grid Background="#FF2D2D30" Margin="0,0,-62,-139">
+        <Grid Margin="10,28,10,20">
             <Grid.RowDefinitions>
 
                 <RowDefinition Height="Auto"/>
@@ -36,6 +36,8 @@
                 <TextBlock x:Name="NameErrorTextBlock" Text="Playlist name is required" Foreground="Red" 
                            FontSize="12" Visibility="Collapsed" Margin="0,5,0,0"/>
             </StackPanel>
+            
+
 
 
 
@@ -43,7 +45,7 @@
 
             <!-- Save Button -->
             <Button Content="Save" Grid.Row="4" Width="100" Height="30" Background="#FF00FF00" 
-                    Foreground="White" BorderThickness="0" Click="SaveBtn" VerticalAlignment="Top" Margin="99,43,111,0">
+                    Foreground="White" BorderThickness="0" Click="SaveBtn" VerticalAlignment="Top" Margin="132,106,144,0">
                 <Button.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Template">
