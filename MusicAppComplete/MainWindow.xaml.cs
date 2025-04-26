@@ -74,10 +74,11 @@ namespace MusicAppComplete
 
 
             PlayListDetail playListDetail = new PlayListDetail();
-
+            playListDetail.IdStackPanel.Visibility = Visibility.Collapsed;
 
 
             playListDetail.ShowDialog();
+            LoadPlaylist();
 
         }
 
@@ -187,13 +188,13 @@ namespace MusicAppComplete
                 return;
             }
 
-            PlayListDetail playListDetail = new PlayListDetail
-            {
-                EditOne = selectedPlaylist
-            };
+            PlayListDetail detail= new PlayListDetail();
+            detail.TitleBox.Text = "Update Playlist";
 
-            playListDetail.ShowDialog();
-            LoadPlaylist(); // Reload playlists after editing
+            detail.EditOne = selectedPlaylist;
+
+            detail.ShowDialog();
+            LoadPlaylist(); 
         }
 
         private void DeletePlaylist_Click(object sender, RoutedEventArgs e)

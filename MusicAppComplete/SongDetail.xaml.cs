@@ -55,6 +55,8 @@ namespace MusicAppComplete
             }
             else
             {
+                IdTextBox.IsEnabled = false;
+
                 song.Id = int.Parse(IdTextBox.Text);
 
                 _service.UpdateSong(song);
