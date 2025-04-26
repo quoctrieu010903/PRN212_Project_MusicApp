@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using Microsoft.Win32;
 using PRN212.Assignment.BLL.Services;
 using PRN212.Assignment.DAL.Entities;
+using PRN212.Assignment.DAL.Repositories;
 using Unosquare.FFME.Common;
 
 
@@ -95,7 +96,7 @@ namespace MusicAppComplete
             SongListBox.ItemsSource = songs;
             shuffleSongList = songs.ToList();
 
-            TotalSongsTextBlock.Text = "Total Songs: " + _songService.getAllSong().Count.ToString();
+            TotalSongTextBlock.Text = "Total Songs: " + _songService.getAllSong().Count.ToString();
             DataContext = this;
 
 
@@ -114,7 +115,7 @@ namespace MusicAppComplete
                 SongListBox.ItemsSource = songs;
 
                 // Cập nhật số lượng bài hát
-                //TotalSongsTextBlocks.Text = $"   Total Songs: {selectedPlaylist.PlaylistSongs.Count}";
+                TotalSongTextBlock.Text = $"   Total Songs: {selectedPlaylist.PlaylistSongs.Count}";
             }
             else
             {
@@ -197,6 +198,52 @@ namespace MusicAppComplete
 
             detail.ShowDialog();
             LoadPlaylist(); 
+        }
+        private void AddPlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            // Lấy playlist đang được chọn
+            var selectedPlaylist = PlaylistListBox.SelectedItem as PlayList;
+            if (selectedPlaylist == null)
+            {
+                MessageBox.Show("Please select a playlist first!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Mở cửa sổ chọn bài hát
+            SongDetail songDetailWindow = new SongDetail();
+            if (songDetailWindow.ShowDialog() == true)
+            {
+                // Lấy bài hát được tạo hoặc chỉnh sửa
+                var selectedSong = songDetailWindow.SelectedSong;
+
+                if (selectedSong != null)
+                {
+                    var repo = new PlayListRepo();
+
+                    // Kiểm tra bài hát đã tồn tại trong playlist chưa
+                    var existingSongs = repo.GetSongsByPlaylist(selectedPlaylist.Id);
+                    if (existingSongs.Any(s => s.Id == selectedSong.Id))
+                    {
+                        MessageBox.Show("This song is already in the selected playlist.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
+                    // Thêm bài hát vào playlist
+                    var playlistSong = new PlayListSongs.PlaylistSong
+                    {
+                        PlaylistId = selectedPlaylist.Id,
+                        SongId = selectedSong.Id
+                    };
+                    repo.AddSongToPlaylist(playlistSong);
+
+                    // Refresh danh sách bài hát hiển thị
+                    var updatedSongs = repo.GetSongsByPlaylist(selectedPlaylist.Id);
+                    SongListBox.ItemsSource = updatedSongs;
+ 
+                
+                }
+                LoadPlaylist();
+            } 
         }
 
         private void DeletePlaylist_Click(object sender, RoutedEventArgs e)
@@ -492,6 +539,11 @@ namespace MusicAppComplete
         {
             TitlePlayList.Text = "All Songs";
             BackButton.Visibility = Visibility.Collapsed;
+            LoadPlaylist();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadPlaylist();
         }
     }
