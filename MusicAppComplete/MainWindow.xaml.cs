@@ -108,7 +108,9 @@ namespace MusicAppComplete
             if (selectedPlaylist != null)
             {
                 var songs = _playListService.GetPlaylistSong(selectedPlaylist.Id);
-            
+                BackButton.Visibility = Visibility.Visible;
+                TitlePlayList.Text = selectedPlaylist.Name;
+
                 SongListBox.ItemsSource = songs;
 
                 // Cập nhật số lượng bài hát
@@ -482,6 +484,15 @@ namespace MusicAppComplete
         {
             var artistDetails = new ArtistDetails();
             artistDetails.ShowDialog(); // Mở cửa sổ ArtistDetails dưới dạng modal
+        }
+
+     
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            TitlePlayList.Text = "All Songs";
+            BackButton.Visibility = Visibility.Collapsed;
+            LoadPlaylist();
         }
     }
 }

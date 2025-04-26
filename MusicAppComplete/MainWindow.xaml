@@ -45,11 +45,23 @@
 
             <!-- Home Label and Song List -->
             <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Margin="10">
-                <TextBlock Text="Home" Style="{StaticResource SectionHeaderStyle}"/>
+
+                <!-- Mũi tên quay lại -->
+
+                <!-- Mũi tên quay về Home -->
+
+                <TextBlock Text="Home" Style="{StaticResource SectionHeaderStyle}" Margin="5,0,0,0"/>
 
                 <Border Style="{StaticResource SectionBorderStyle}">
                     <StackPanel>
-                        <TextBlock Text="All Songs" Style="{StaticResource SubHeaderStyle}"/>
+                        <Button x:Name="BackButton"
+                            Grid.Column="0"
+                            Style="{StaticResource BackArrowButtonStyle}"
+                            Click="BackButton_Click"
+                            Visibility="Collapsed"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"/> 
+                        <TextBlock x:Name="TitlePlayList"  Text="All Songs" Style="{StaticResource SubHeaderStyle}"/>
                         <TextBlock x:Name="TotalSongsTextBlock" 
                                    Text="Total Songs: 0" 
                                    Style="{StaticResource SecondaryTextStyle}" 
@@ -62,13 +74,14 @@
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  SelectionChanged="SongListBox_SelectionChanged">
                             <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource SongListItemStyle}"/>
+                                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource SongListItemStyle}"/>
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,2">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
+                                            <!-- Add Button -->
                                             <!-- Index -->
                                             <ColumnDefinition Width="2*"/>
                                             <!-- Title -->
@@ -76,8 +89,10 @@
                                             <!-- Artist -->
                                             <ColumnDefinition Width="1*"/>
                                             <!-- Duration -->
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
+                                        <!-- Add to Playlist Button -->
                                         <!-- ContextMenu for Song List (Appears on Right-Click) -->
                                         <Grid.ContextMenu>
                                             <ContextMenu Style="{StaticResource ContextMenuStyle}">
@@ -111,10 +126,13 @@
                                                    Text="{Binding Duration}" 
                                                    Style="{StaticResource SecondaryTextStyle}" 
                                                    HorizontalAlignment="Right"/>
+
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+                   
+                    
                     </StackPanel>
                 </Border>
             </StackPanel>
@@ -229,8 +247,8 @@
                         Click="NextTrack_Click" 
                         ToolTip="Next Track" Height="31"/>
                     </StackPanel>
-                    
-                    
+
+
 
                     <!-- Playback Slider and Time -->
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0">
