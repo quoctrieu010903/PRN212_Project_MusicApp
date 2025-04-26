@@ -144,6 +144,7 @@
 
                                         <!-- ContextMenu for Playlist (Appears on Right-Click) -->
                                         <Grid.ContextMenu>
+
                                             <ContextMenu Style="{StaticResource ContextMenuStyle}">
                                                 <MenuItem Header="Edit Playlist" 
                                   Style="{StaticResource MenuItemStyle}" 

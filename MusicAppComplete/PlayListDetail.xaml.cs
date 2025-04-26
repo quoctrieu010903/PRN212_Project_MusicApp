@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using PRN212.Assignment.BLL.Services;
 using PRN212.Assignment.DAL.Entities;
 
 namespace MusicAppComplete
@@ -20,22 +21,48 @@ namespace MusicAppComplete
     /// </summary>
     public partial class PlayListDetail : Window
     {
+        private PlayListService PlayListService = new PlayListService();    
         public PlayList EditOne { get; set; } = null;
         public PlayListDetail()
         {
             InitializeComponent();
+         
         }
 
-        private void AddSongButton_Click(object sender, RoutedEventArgs e)
+        private void FillElement()
         {
-            SongDetail songDetail = new SongDetail();
-
-            songDetail.ShowDialog();
+            IdTextBox.Text = EditOne.Id.ToString();
+            PlaylistNameTextBox.Text  = EditOne.Name;
         }
 
         private void SaveBtn(object sender, RoutedEventArgs e)
         {
 
+            PlayList playList = new PlayList(); // sau do gan gia 
+            playList.Name = PlaylistNameTextBox.Text;
+            if (EditOne == null)
+            {
+                PlayListService.CreatePlaylist(playList);
+
+            }
+            else
+            {
+
+                IdTextBox.IsEnabled = false;
+                playList.Id = EditOne.Id;
+                PlayListService.UpdatePlaylist(playList);
+
+            }
+            this.Hide();
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (EditOne != null)
+            {
+                FillElement();
+            }
         }
     }
 }

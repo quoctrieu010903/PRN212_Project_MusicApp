@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicAppComplete"
         mc:Ignorable="d"
-        Title="PlayListDetail" Height="350" Width="350" WindowStartupLocation="CenterScreen">
-    <Grid Background="#FF2D2D30">
-        <Grid Margin="20">
+        Title="PlayListDetail" Height="248" Width="334" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid Background="#FF2D2D30" Margin="0,0,0,-105">
+        <Grid Margin="10,28,20,20">
             <Grid.RowDefinitions>
-               
+
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -18,45 +18,32 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="Add Playlist" FontSize="20" FontWeight="Bold" Foreground="White" 
+            <TextBlock x:Name="TitleBox" Text="Add Playlist" FontSize="20" FontWeight="Bold" Foreground="White" 
                        HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,20"/>
 
-           
+            <!-- Playlist ID -->
+            <StackPanel x:Name="IdStackPanel" Grid.Row="1" Margin="0,0,0,10">
+                <TextBlock Text="ID" Foreground="White" FontSize="14"/>
+                <TextBox x:Name="IdTextBox" Text="" Width="300" Margin="0,5,0,0" 
+              Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00" IsReadOnly="True"/>
+            </StackPanel>
 
             <!-- Playlist Name -->
             <StackPanel Grid.Row="2" Margin="0,0,0,10">
                 <TextBlock Text="Playlist Name*" Foreground="White" FontSize="14"/>
-                <TextBox x:Name="PlaylistNameTextBox" Text="" Width="300" Margin="0,5,0,0" 
-                         Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00"/>
+                <TextBox x:Name="PlaylistNameTextBox" Text="" Width="289" Margin="0,5,0,0" 
+                         Background="#FF3C3C3E" Foreground="White" BorderBrush="#FF00FF00" Height="30"/>
                 <TextBlock x:Name="NameErrorTextBlock" Text="Playlist name is required" Foreground="Red" 
                            FontSize="12" Visibility="Collapsed" Margin="0,5,0,0"/>
             </StackPanel>
 
-            <!-- Total Songs and Add Song Button -->
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                <TextBlock x:Name="TotalSongsLabel" Text="Total song: 0" Foreground="White" FontSize="14" VerticalAlignment="Center"/>
-                <Button Content="Add song" Width="100" Height="30" Margin="20,0,0,0" Background="#FF00FF00" 
-                        Foreground="White" BorderThickness="0" Click="AddSongButton_Click">
-                    <Button.Resources>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" 
-                                                CornerRadius="15" 
-                                                BorderThickness="{TemplateBinding BorderThickness}">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
 
-            <Button Content="Save" Grid.Row="5" Width="100" Height="30" Background="#FF00FF00" 
-                    Foreground="White" BorderThickness="0" Click="SaveBtn" >
+
+
+
+            <!-- Save Button -->
+            <Button Content="Save" Grid.Row="4" Width="100" Height="30" Background="#FF00FF00" 
+                    Foreground="White" BorderThickness="0" Click="SaveBtn" VerticalAlignment="Top" Margin="99,43,111,0">
                 <Button.Resources>
                     <Style TargetType="Button">
                         <Setter Property="Template">
@@ -73,8 +60,6 @@
                     </Style>
                 </Button.Resources>
             </Button>
-
-
         </Grid>
     </Grid>
 </Window>
